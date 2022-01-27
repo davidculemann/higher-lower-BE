@@ -52,11 +52,11 @@ app.post("/users/:username", async (req, res) => {
 });
 
 app.post("/scores", async (req, res) => {
-  const { score, user_id, category } = req.body;
+  const { score, name, category } = req.body;
   try {
     const dbres = await client.query(
-      "insert into scores (score, user_id, category) values ($1, $2, $3)",
-      [score, user_id, category]
+      "insert into scores (score, user_id, category) values ($1, (SELECT user_id FROM users WHERE name = $2), $3)",
+      [score, name, category]
     );
     res.status(201).json({
       status: "success",
