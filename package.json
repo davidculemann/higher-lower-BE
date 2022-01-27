@@ -5,7 +5,9 @@
   "main": "server.js",
   "scripts": {
     "start": "node dist/server.js",
-    "start:dev": "LOCAL=true ts-node server.ts",
+    "start:dev": "ts-node server.ts",
+    "format": "prettier --write server.ts",
+    "format:check": "prettier --check server.ts",
     "postinstall": "tsc"
   },
   "author": "your name here",
