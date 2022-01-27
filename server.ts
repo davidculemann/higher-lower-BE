@@ -29,7 +29,7 @@ app.get("/users", async (req, res) => {
 
 app.get("/scores", async (req, res) => {
   const dbres = await client.query(
-    "SELECT max(scores.score) as highscore, users.name, scores.category FROM scores JOIN users ON scores.user_id = users.user_id GROUP BY users.name, scores.category ORDER BY highscore desc, scores.category;"
+    "SELECT max(scores.score) as highscore, users.name, scores.category FROM scores JOIN users ON scores.user_id = users.user_id GROUP BY users.name, scores.category ORDER BY highscore desc, scores.category limit 10;"
   );
   res.json(dbres.rows);
 });
@@ -52,11 +52,11 @@ app.post("/users/:username", async (req, res) => {
 });
 
 app.post("/scores", async (req, res) => {
-  const { score, user_id, category } = req.body;
+  const { score, name, category } = req.body;
   try {
     const dbres = await client.query(
-      "insert into scores (score, user_id, category) values ($1, $2, $3)",
-      [score, user_id, category]
+      "insert into scores (score, user_id, category) values ($1, (SELECT user_id FROM users WHERE name = $2), $3)",
+      [score, name, category]
     );
     res.status(201).json({
       status: "success",
