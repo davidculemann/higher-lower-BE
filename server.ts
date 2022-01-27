@@ -29,7 +29,7 @@ app.get("/users", async (req, res) => {
 
 app.get("/scores", async (req, res) => {
   const dbres = await client.query(
-    "SELECT max(scores.score) as highscore, users.name, scores.category FROM scores JOIN users ON scores.user_id = users.user_id GROUP BY users.name, scores.category ORDER BY highscore desc, scores.category;"
+    "SELECT max(scores.score) as highscore, users.name, scores.category FROM scores JOIN users ON scores.user_id = users.user_id GROUP BY users.name, scores.category ORDER BY highscore desc, scores.category limit 10;"
   );
   res.json(dbres.rows);
 });
