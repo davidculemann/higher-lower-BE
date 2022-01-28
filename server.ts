@@ -28,8 +28,19 @@ app.get("/users", async (req, res) => {
 });
 
 app.get("/scores", async (req, res) => {
+  const timetrial = "%T)%";
   const dbres = await client.query(
-    "SELECT max(scores.score) as highscore, users.name, scores.category FROM scores JOIN users ON scores.user_id = users.user_id GROUP BY users.name, scores.category ORDER BY highscore desc, scores.category limit 10;"
+    "SELECT max(scores.score) as highscore, users.name, scores.category FROM scores JOIN users ON scores.user_id = users.user_id WHERE scores.category NOT LIKE $1 GROUP BY users.name, scores.category ORDER BY highscore desc, scores.category limit 10;",
+    [timetrial]
+  );
+  res.json(dbres.rows);
+});
+
+app.get("/scores/timetrial", async (req, res) => {
+  const timetrial = "%T)%";
+  const dbres = await client.query(
+    "SELECT max(scores.score) as highscore, users.name, scores.category FROM scores JOIN users ON scores.user_id = users.user_id WHERE scores.category LIKE $1 GROUP BY users.name, scores.category ORDER BY highscore desc, scores.category limit 10;",
+    [timetrial]
   );
   res.json(dbres.rows);
 });
